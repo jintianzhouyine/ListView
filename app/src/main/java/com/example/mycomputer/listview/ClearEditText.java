@@ -18,37 +18,39 @@ import android.view.animation.TranslateAnimation;
  */
 
 public class ClearEditText extends android.support.v7.widget.AppCompatEditText implements OnFocusChangeListener,TextWatcher {
-
-
-    private Drawable mClearDrawable;
     /**
-     * 构造方法
-     * @param context
+     * 删除按钮的引用
      */
+    private Drawable mClearDrawable;
+
     public ClearEditText(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public ClearEditText(Context context, AttributeSet attrs) {
-        super(context, attrs,android.R.attr.editTextStyle);
+        //这里构造方法也很重要，不加这个很多属性不能再XML里面定义
+        this(context, attrs, android.R.attr.editTextStyle);
     }
 
-    public ClearEditText(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public ClearEditText(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init();
     }
 
-    private void init(){
+
+    private void init() {
+        //获取EditText的DrawableRight,假如没有设置我们就使用默认的图片
         mClearDrawable = getCompoundDrawables()[2];
-        if(mClearDrawable == null){
+        if (mClearDrawable == null) {
             mClearDrawable = getResources()
                     .getDrawable(R.drawable.emotionstore_progresscancelbtn);
         }
-        mClearDrawable.setBounds(0,0,mClearDrawable.getIntrinsicWidth(),mClearDrawable.getIntrinsicHeight());
+        mClearDrawable.setBounds(0, 0, mClearDrawable.getIntrinsicWidth(), mClearDrawable.getIntrinsicHeight());
         setClearIconVisible(false);
         setOnFocusChangeListener(this);
         addTextChangedListener(this);
     }
+
 
     /**
      * 因为我们不能直接给EditText设置点击事件，所以我们用记住我们按下的位置来模拟点击事件
@@ -67,10 +69,21 @@ public class ClearEditText extends android.support.v7.widget.AppCompatEditText i
                 }
             }
         }
+
         return super.onTouchEvent(event);
     }
 
-
+    /**
+     * 当ClearEditText焦点发生变化的时候，判断里面字符串长度设置清除图标的显示与隐藏
+     */
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            setClearIconVisible(getText().length() > 0);
+        } else {
+            setClearIconVisible(false);
+        }
+    }
 
 
     /**
@@ -83,33 +96,27 @@ public class ClearEditText extends android.support.v7.widget.AppCompatEditText i
                 getCompoundDrawables()[1], right, getCompoundDrawables()[3]);
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-    }
     /**
      * 当输入框里面内容发生变化的时候回调的方法
      */
     @Override
-    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        setClearIconVisible(charSequence.length() > 0);
+    public void onTextChanged(CharSequence s, int start, int count,
+                              int after) {
+        setClearIconVisible(s.length() > 0);
     }
 
     @Override
-    public void afterTextChanged(Editable editable) {
+    public void beforeTextChanged(CharSequence s, int start, int count,
+                                  int after) {
 
     }
-    /**
-     * 当ClearEditText焦点发生变化的时候，判断里面字符串长度设置清除图标的显示与隐藏
-     */
+
     @Override
-    public void onFocusChange(View view, boolean hasFocus) {
-        if (hasFocus) {
-            setClearIconVisible(getText().length() > 0);
-        } else {
-            setClearIconVisible(false);
-        }
+    public void afterTextChanged(Editable s) {
+
     }
+
 
     /**
      * 设置晃动动画

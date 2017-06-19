@@ -36,7 +36,7 @@ public class SideBar extends View{
      * 为SideBar 设置显示的字母的TextView
      * @param mTextDialog
      */
-    public void setmTextDialog(TextView mTextDialog) {
+    public void setTextView(TextView mTextDialog) {
         this.mTextDialog = mTextDialog;
     }
 
@@ -68,7 +68,7 @@ public class SideBar extends View{
             paint.setColor(Color.rgb(33,65,98));
             paint.setTypeface(Typeface.DEFAULT_BOLD);
             paint.setAntiAlias(true);//抗锯齿
-            paint.setTextSize(20);
+            paint.setTextSize((float)(singleHeight*0.9));
             //选中的状态
             if(i == choose){
                 paint.setColor(Color.parseColor("#3399ff"));
@@ -100,13 +100,14 @@ public class SideBar extends View{
                 }
                 break;
             default:
-                setBackgroundResource(R.drawable.sidebar_background);
+                //setBackgroundResource(R.drawable.sidebar_background);
                 if(oldChoose != c){
                     if(c >=0 && c<b.length){
                         if(listener != null){
                             listener.onTouchingLetterChanged(b[c]);
                         }
                         if(mTextDialog != null){
+                            mTextDialog.setAlpha((float)0.5);
                             mTextDialog.setText(b[c]);
                             mTextDialog.setVisibility(View.VISIBLE);
                         }
